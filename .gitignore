@@ -1,0 +1,20 @@
+
+# --- Android (PhotoViewer) ---
+PhotoViewer/build/
+PhotoViewer/app/build/
+PhotoViewer/.gradle/
+PhotoViewer/.idea/
+PhotoViewer/local.properties
+PhotoViewer/.cxx/
+PhotoViewer/*.iml
+PhotoViewer/app/*.iml
+
+# PhotoBlogServer runtime/venv
+PhotoBlogServer/venv/
+PhotoBlogServer/db.sqlite3
+PhotoBlogServer/media/images/2026/
+PhotoBlogServer/server.log
+
+# macOS
+.DS_Store
+**/.DS_Store
