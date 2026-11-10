@@ -3,6 +3,7 @@ import cv2
 import pathlib
 import requests
 from datetime import datetime
+import discord_notify
 
 
 class ChangeDetection:
@@ -13,7 +14,7 @@ class ChangeDetection:
     """
 
     result_prev = []
-    HOST = 'http://127.0.0.1:8000'
+    HOST = os.environ.get('PHOTOBLOG_HOST', 'http://127.0.0.1:8000')  # 로컬 기본값, 클라우드 테스트 시 run_detect_cloud.command가 덮어씀
     username = 'admin'
     password = '123456'
     token = ''
@@ -73,3 +74,7 @@ class ChangeDetection:
             files = {'image': f}
             res = requests.post(self.HOST + '/api_root/Post/', data=data, files=files, headers=headers)
         print('ChangeDetection: 서버 전송 결과', res.status_code, res.text[:200])
+
+        # 공통평가 02 - 편의기능#1: 서버 전송 성공 시 Discord로도 실시간 알림
+        if res.status_code == 201:
+            discord_notify.send_discord_alert(self.title, self.text, full_path)

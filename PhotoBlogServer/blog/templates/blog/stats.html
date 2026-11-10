@@ -1,0 +1,55 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h2>침입자 감지 통계</h2>
+
+    <div class="row" style="margin-bottom:20px;">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body text-center">
+                    <h3 style="margin:0;">{{ total }}</h3>
+                    <small>누적 감지 건수</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body text-center">
+                    <h3 style="margin:0;">{{ last_24h }}</h3>
+                    <small>최근 24시간 내 감지</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>클래스별 감지 횟수</h3>
+    {% if by_title %}
+    <table class="table">
+        {% for row in by_title %}
+        <tr>
+            <td style="width:120px;"><strong>{{ row.title }}</strong></td>
+            <td>
+                <div style="background:#eee;border-radius:4px;overflow:hidden;height:22px;">
+                    <div style="background:#5cb85c;height:22px;width:{{ row.percent }}%;min-width:2px;"></div>
+                </div>
+            </td>
+            <td style="width:50px;text-align:right;">{{ row.count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>아직 감지된 객체가 없습니다.</p>
+    {% endif %}
+
+    <h3>최근 감지 10건</h3>
+    <table class="table">
+        <tr><th>시간</th><th>객체</th><th>이미지</th></tr>
+        {% for post in recent %}
+        <tr>
+            <td>{{ post.created_date|date:"Y-m-d H:i:s" }}</td>
+            <td>{{ post.title }}</td>
+            <td><img src="{{ post.image.url }}" style="height:60px;border-radius:4px;"></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.db.models import Count
+from datetime import timedelta
 from .models import Post
 from .forms import PostForm
 from rest_framework import viewsets, filters, permissions
@@ -76,4 +78,22 @@ def me(request):
     return Response({
         'id': request.user.id,
         'username': request.user.username,
+    })
+
+
+# 공통평가 02 - 편의기능#2: 감지 통계 대시보드
+def stats(request):
+    posts = Post.objects.all()
+    total = posts.count()
+    by_title = list(posts.values('title').annotate(count=Count('id')).order_by('-count'))
+    max_count = by_title[0]['count'] if by_title else 0
+    for row in by_title:
+        row['percent'] = int(row['count'] * 100 / max_count) if max_count else 0
+    recent = posts.order_by('-created_date')[:10]
+    last_24h = posts.filter(created_date__gte=timezone.now() - timedelta(hours=24)).count()
+    return render(request, 'blog/stats.html', {
+        'total': total,
+        'by_title': by_title,
+        'recent': recent,
+        'last_24h': last_24h,
     })
